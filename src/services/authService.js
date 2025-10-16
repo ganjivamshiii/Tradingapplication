@@ -15,7 +15,7 @@ export const authService = {
     console.log('📤 Sending login request to /api/auth/login...');
     const response = await api.post(
       '/api/auth/login',
-      { username, password }, // <-- send JSON directly
+      { username, password }, // <-- JSON payload
       { headers: { 'Content-Type': 'application/json' } }
     );
 
@@ -34,6 +34,7 @@ export const authService = {
     console.error('❌ Login failed:', error.response?.data || error.message);
     throw error;
   }
+
   },
 
   // ✅ Register
