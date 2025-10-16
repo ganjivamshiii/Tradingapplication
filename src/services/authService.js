@@ -4,37 +4,47 @@ const TOKEN_KEY = 'auth_token';
 const USER_KEY = 'user_data';
 
 export const authService = {
-    getToken() {
+  getToken() {
     return localStorage.getItem(TOKEN_KEY);
   },
-  // ✅ Login
+  
+  // ✅ Login - FIXED to send form data instead of JSON
   async login(username, password) {
-  console.log('🔐 [authService] login() called with:', { username });
+    console.log('🔐 [authService] login() called with:', { username });
 
-  try {
-    console.log('📤 Sending login request to /api/auth/login...');
-    const response = await api.post(
-      '/api/auth/login',
-      { username, password }, // <-- JSON payload
-      { headers: { 'Content-Type': 'application/json' } }
-    );
+    try {
+      console.log('📤 Sending login request to /api/auth/login...');
+      
+      // Create URLSearchParams for form-encoded data
+      const formData = new URLSearchParams();
+      formData.append('username', username);
+      formData.append('password', password);
+      
+      const response = await api.post(
+        '/api/auth/login',
+        formData,
+        { 
+          headers: { 
+            'Content-Type': 'application/x-www-form-urlencoded' 
+          } 
+        }
+      );
 
-    console.log('📥 Login response received:', response.data);
+      console.log('📥 Login response received:', response.data);
 
-    if (response.data.access_token) {
-      console.log('✅ Access token received, saving to localStorage');
-      this.setToken(response.data.access_token);
-      await this.fetchUserData();
-    } else {
-      console.warn('⚠️ No access_token found in login response');
+      if (response.data.access_token) {
+        console.log('✅ Access token received, saving to localStorage');
+        this.setToken(response.data.access_token);
+        await this.fetchUserData();
+      } else {
+        console.warn('⚠️ No access_token found in login response');
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error('❌ Login failed:', error.response?.data || error.message);
+      throw error;
     }
-
-    return response.data;
-  } catch (error) {
-    console.error('❌ Login failed:', error.response?.data || error.message);
-    throw error;
-  }
-
   },
 
   // ✅ Register
@@ -133,7 +143,7 @@ export const authService = {
 api.interceptors.request.use(
   (config) => {
     try {
-      const token = localStorage.getItem('auth_token'); // use direct access
+      const token = localStorage.getItem('auth_token');
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
         console.log('📡 [Interceptor] Added Authorization header');
@@ -147,7 +157,6 @@ api.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
-
 
 // ✅ Interceptor: Handle 401 globally
 api.interceptors.response.use(
