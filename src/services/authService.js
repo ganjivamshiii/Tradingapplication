@@ -8,7 +8,7 @@ export const authService = {
     return localStorage.getItem(TOKEN_KEY);
   },
   
-  // ✅ Login - FIXED to send form data instead of JSON
+  // ✅ Login - Using JSON endpoint
   async login(username, password) {
     console.log('🔐 [authService] login() called with:', { username });
 
@@ -38,8 +38,21 @@ export const authService = {
       return response.data;
     } catch (error) {
       console.error('❌ Login failed:', error.response?.data || error.message);
-      console.error('Full error object:', error);
-      throw error;
+      
+      // Better error handling for UI display
+      const errorMessage = error.response?.data?.detail || 
+                          error.response?.data?.message || 
+                          error.message || 
+                          'Login failed';
+      
+      console.error('Error details:', {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        detail: error.response?.data?.detail
+      });
+      
+      // Throw a user-friendly error
+      throw new Error(errorMessage);
     }
   },
 
