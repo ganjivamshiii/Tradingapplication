@@ -24,7 +24,8 @@ function LiveTradingView() {
 
   // WebSocket connection for live price updates
   useEffect(() => {
-    const wsUrl = `ws://localhost:8000/ws/price/${symbol}`;
+    // const wsUrl = `ws://localhost:8000/ws/price/${symbol}`;
+    const wsUrl = `wss://tradingapplicationbackendd-production.up.railway.app/ws/price/${symbol}`;
 
     console.log('[WebSocket] Connecting to', wsUrl);
     WebSocketService.connect(wsUrl);
