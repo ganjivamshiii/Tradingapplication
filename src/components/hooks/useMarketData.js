@@ -16,7 +16,7 @@ const useMarketData = () => {
           return response.data;
       }catch(err){
          const errormsg=err.response?.data.details || 'Failed to fetch data';
-         setError(errorMsg);
+         setError(errormsg);
       }
       finally{
           setLoading(false);
