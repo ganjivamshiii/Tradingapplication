@@ -1,87 +1,96 @@
 import axios from 'axios'
-// const API_BASE_URL='http://127.0.0.1:8000'
-const API_BASE_URL='https://tradingapplicationbackendd-production.up.railway.app'
 
-const api=axios.create({
-    baseURL:API_BASE_URL,
-    header:{
-        'content-Type':'application/json'
+const API_BASE_URL = 'https://tradingapplicationbackendd-production.up.railway.app'
+
+const api = axios.create({
+    baseURL: API_BASE_URL,
+    headers: {   // ✅ corrected key
+        'Content-Type': 'application/json'
     }
 })
 
-export const getHistoricalData=(symbol, period='1mo', interval='1d')=>{
-    return api.get(`/api/market/historical/${symbol}`,{
-        params:{period, interval}
+export const getHistoricalData = (symbol, period='1mo', interval='1d') => {
+    return api.get(`/api/market/historical/${symbol}`, {
+        params: { period, interval }
     });
 }
 
-export const getLiveData=(symbol)=>{
-    return api.get(`api/market/live/${symbol}`)
+export const getLiveData = (symbol) => {
+    return api.get(`/api/market/live/${symbol}`)
 }
 
-export const getLatestPrice =(symbol)=>{
+export const getLatestPrice = (symbol) => {
     return api.get(`/api/market/price/${symbol}`)
 }
 
-export const getStrategies =()=>{
+export const getStrategies = () => {
     return api.get('/api/strategies/list');
 }
 
-export const getSignals=(symbol, strategy, period='3mo', interval='1d')=>{
-    return api.get(`/api/strategies/signals/${symbol}`,{
-        params:{strategy, period, interval}
+export const getSignals = (symbol, strategy, period='3mo', interval='1d') => {
+    return api.get(`/api/strategies/signals/${symbol}`, {
+        params: { strategy, period, interval }
     })
 }
 
-export const analyzesymbols=(symbol, strategy, period='3mo')=>{
-    return api.get(`/api/strategies/analyze/${symbol}`,{
-          params:{strategy, period, interval}
+export const analyzeSymbols = (symbol, strategy, period='3mo', interval='1d') => { // ✅ added interval
+    return api.get(`/api/strategies/analyze/${symbol}`, {
+        params: { strategy, period, interval }
     })
 }
 
-export const runBackTest=(data)=>{
+export const runBackTest = (data) => {
     return api.post('/api/backtest/run', data);
 }
-export const listPortfolios=()=>{
+
+export const listPortfolios = () => {
     return api.get('/api/portfolio/');
 }
-export const compareStrategies =(symbol, period='1y', initialCapital=1000)=>{
-    return api.get(`/api/backtest/compare/${symbol}`,{
-        params:{period, intital_capital:initialCapital}
+
+export const compareStrategies = (symbol, period='1y', initialCapital=1000) => { // ✅ fixed typo
+    return api.get(`/api/backtest/compare/${symbol}`, {
+        params: { period, initial_capital: initialCapital } 
     })
 }
-export const getBacktestMetrics =(symbol, strategy, period='1y')=>{
-    return api.get(`/api/backtest/metrics/${symbol}`,{
-        params:{strategy, period}
+
+export const getBacktestMetrics = (symbol, strategy, period='1y') => {
+    return api.get(`/api/backtest/metrics/${symbol}`, {
+        params: { strategy, period }
     })
 }
-export const getPortfolio=(strategy)=>{
+
+export const getPortfolio = (strategy) => {
     return api.get(`/api/portfolio/${strategy}`)
 }
 
-export const createPortfolio=(strategy, intialCapital=10000)=>{
-    return api.post(`/api/portfolio/create/${strategy}`,null,{
-        params:{intial_capital:initialCapital}
+export const createPortfolio = (strategy, initialCapital=10000) => { // ✅ fixed typo
+    return api.post(`/api/portfolio/create/${strategy}`, null, {
+        params: { initial_capital: initialCapital }
     })
 }
-export const getPosition =(strategy)=>{
+
+export const getPosition = (strategy) => {
     return api.get(`/api/portfolio/${strategy}/positions`)
 }
-export const executeTrade=(data)=>{
-    return api.post('/api/trades/execute',data);
-}
-export const getTradeHistory=(strategy, limit=100)=>{
-    return api.get(`/api/trades/history/symbol/${strategy}`,{
-        params:{limit}
-    })
 
+export const executeTrade = (data) => {
+    return api.post('/api/trades/execute', data);
 }
-export const getTradeStats=(strategy)=>{
+
+export const getTradeHistory = (strategy, limit=100) => {
+    return api.get(`/api/trades/history/symbol/${strategy}`, {
+        params: { limit }
+    })
+}
+
+export const getTradeStats = (strategy) => {
     return api.get(`/api/trade/stats/${strategy}`);
 }
-export const getSymbolTrade =(symbol , strategy=null, limit=100)=>{
+
+export const getSymbolTrade = (symbol, strategy=null, limit=100) => {
     return api.get(`/api/trades/history/symbol/${symbol}`, {
-        params:{strategy, limit}
+        params: { strategy, limit }
     })
 }
+
 export default api;
