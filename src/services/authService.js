@@ -9,33 +9,31 @@ export const authService = {
   },
   // ✅ Login
   async login(username, password) {
-    console.log('🔐 [authService] login() called with:', { username });
+  console.log('🔐 [authService] login() called with:', { username });
 
-    const formData = new FormData();
-    formData.append('username', username);
-    formData.append('password', password);
+  try {
+    console.log('📤 Sending login request to /api/auth/login...');
+    const response = await api.post(
+      '/api/auth/login',
+      { username, password }, // <-- send JSON directly
+      { headers: { 'Content-Type': 'application/json' } }
+    );
 
-    try {
-      console.log('📤 Sending login request to /api/auth/login...');
-      const response = await api.post('/api/auth/login', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+    console.log('📥 Login response received:', response.data);
 
-      console.log('📥 Login response received:', response.data);
-
-      if (response.data.access_token) {
-        console.log('✅ Access token received, saving to localStorage');
-        this.setToken(response.data.access_token);
-        await this.fetchUserData();
-      } else {
-        console.warn('⚠️ No access_token found in login response');
-      }
-
-      return response.data;
-    } catch (error) {
-      console.error('❌ Login failed:', error.response?.data || error.message);
-      throw error;
+    if (response.data.access_token) {
+      console.log('✅ Access token received, saving to localStorage');
+      this.setToken(response.data.access_token);
+      await this.fetchUserData();
+    } else {
+      console.warn('⚠️ No access_token found in login response');
     }
+
+    return response.data;
+  } catch (error) {
+    console.error('❌ Login failed:', error.response?.data || error.message);
+    throw error;
+  }
   },
 
   // ✅ Register
