@@ -20,9 +20,12 @@ export const authService = {
       formData.append('username', username);
       formData.append('password', password);
       
+      // Log the actual form data being sent
+      console.log('📋 Form data being sent:', formData.toString());
+      
       const response = await api.post(
         '/api/auth/login',
-        formData,
+        formData.toString(),
         { 
           headers: { 
             'Content-Type': 'application/x-www-form-urlencoded' 
@@ -43,6 +46,7 @@ export const authService = {
       return response.data;
     } catch (error) {
       console.error('❌ Login failed:', error.response?.data || error.message);
+      console.error('Full error object:', error);
       throw error;
     }
   },
