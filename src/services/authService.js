@@ -13,22 +13,14 @@ export const authService = {
     console.log('🔐 [authService] login() called with:', { username });
 
     try {
-      console.log('📤 Sending login request to /api/auth/login...');
-      
-      // Create URLSearchParams for form-encoded data
-      const formData = new URLSearchParams();
-      formData.append('username', username);
-      formData.append('password', password);
-      
-      // Log the actual form data being sent
-      console.log('📋 Form data being sent:', formData.toString());
+      console.log('📤 Sending login request to /api/auth/login-json...');
       
       const response = await api.post(
-        '/api/auth/login',
-        formData.toString(),
+        '/api/auth/login-json',
+        { username, password },
         { 
           headers: { 
-            'Content-Type': 'application/x-www-form-urlencoded' 
+            'Content-Type': 'application/json' 
           } 
         }
       );
